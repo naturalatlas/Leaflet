@@ -2,6 +2,7 @@ import {Class} from '../../core/Class';
 import {setOptions} from '../../core/Util';
 import {toPoint as point} from '../../geometry/Point';
 import {retina} from '../../core/Browser';
+import {remapClass} from '../../dom/DomUtil';
 
 /*
  * @class Icon
@@ -123,7 +124,7 @@ export var Icon = Class.extend({
 		    anchor = point(name === 'shadow' && options.shadowAnchor || options.iconAnchor ||
 		            size && size.divideBy(2, true));
 
-		img.className = 'leaflet-marker-' + name + ' ' + (options.className || '');
+		img.className = remapClass('leaflet-marker-' + name) + ' ' + (options.className || '');
 
 		if (anchor) {
 			img.style.marginLeft = (-anchor.x) + 'px';

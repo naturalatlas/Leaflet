@@ -33,6 +33,23 @@ export var TRANSITION = testProp(
 export var TRANSITION_END =
 	TRANSITION === 'webkitTransition' || TRANSITION === 'OTransition' ? TRANSITION + 'End' : 'transitionend';
 
+var classRemapper;
+
+// @function remapClass(name: String)
+// Remaps a Leaflet CSS class name using any remapping function set with [`L.DomUtil.setClassRemapper`]().
+export function remapClass(name) {
+	return classRemapper ? classRemapper(name) : name;
+}
+
+// @function setClassRemapper(fn: Function)
+// Sets a function that handles translating a space-separated list of leaflet CSS
+// class names to potentially-namespaced versions. This is an advanced feature – it
+// should not be used unless you're running Leaflet in an unpredictable environment
+// where namespacing is needed (e.g. a third-party website that could be running its
+// own version of Leaflet).
+export function setClassRemapper(fn) {
+	classRemapper = fn;
+}
 
 // @function get(id: String|HTMLElement): HTMLElement
 // Returns an element given its DOM id, or returns the element itself
@@ -58,7 +75,7 @@ export function getStyle(el, style) {
 // Creates an HTML element with `tagName`, sets its class to `className`, and optionally appends it to `container` element.
 export function create(tagName, className, container) {
 	var el = document.createElement(tagName);
-	el.className = className || '';
+	el.className = className ? remapClass(className) : '';
 
 	if (container) {
 		container.appendChild(el);
@@ -104,6 +121,7 @@ export function toBack(el) {
 // @function hasClass(el: HTMLElement, name: String): Boolean
 // Returns `true` if the element's class attribute contains `name`.
 export function hasClass(el, name) {
+	name = remapClass(name);
 	if (el.classList !== undefined) {
 		return el.classList.contains(name);
 	}
@@ -117,7 +135,7 @@ export function addClass(el, name) {
 	if (el.classList !== undefined) {
 		var classes = Util.splitWords(name);
 		for (var i = 0, len = classes.length; i < len; i++) {
-			el.classList.add(classes[i]);
+			el.classList.add(remapClass(classes[i]));
 		}
 	} else if (!hasClass(el, name)) {
 		var className = getClass(el);
@@ -128,6 +146,7 @@ export function addClass(el, name) {
 // @function removeClass(el: HTMLElement, name: String)
 // Removes `name` from the element's class attribute.
 export function removeClass(el, name) {
+	name = remapClass(name);
 	if (el.classList !== undefined) {
 		el.classList.remove(name);
 	} else {
@@ -138,6 +157,7 @@ export function removeClass(el, name) {
 // @function setClass(el: HTMLElement, name: String)
 // Sets the element's class.
 export function setClass(el, name) {
+	name = remapClass(name);
 	if (el.className.baseVal === undefined) {
 		el.className = name;
 	} else {

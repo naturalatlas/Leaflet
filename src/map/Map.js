@@ -1580,7 +1580,7 @@ export var Map = Evented.extend({
 	},
 
 	_nothingToAnimate: function () {
-		return !this._container.getElementsByClassName('leaflet-zoom-animated').length;
+		return !this._container.getElementsByClassName(DomUtil.remapClass('leaflet-zoom-animated')).length;
 	},
 
 	_tryAnimatedZoom: function (center, zoom, options) {
