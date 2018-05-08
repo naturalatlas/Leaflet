@@ -229,7 +229,7 @@ const isInteger = Number.isInteger || (value => Math.floor(value) === value);
 // browser doesn't support 3D CSS transforms.
 export function setTransform(el, offset, scale, round) {
 	var pos = offset || new Point(0, 0);
-	if (round && !isInteger(scale)) {
+	if (round && scale && !isInteger(scale)) {
 		round = false; // rounding to prevent blurriness is pointless if there's not a round scale
 	}
 	var x = round ? Math.round(pos.x) : pos.x;
