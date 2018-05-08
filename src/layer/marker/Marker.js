@@ -117,6 +117,7 @@ export var Marker = Layer.extend({
 
 		if (this._zoomAnimated) {
 			map.off('zoomanim', this._animateZoom, this);
+			map.off('zoomend', this._animateZoomEnd, this);
 		}
 
 		this._removeIcon();
@@ -298,8 +299,10 @@ export var Marker = Layer.extend({
 	},
 
 	_animateZoomEnd: function () {
-		var pos = this._map._latLngToNewLayerPoint(this._latlng, this._map.getZoom(), this._map.getCenter());
-		this._setPos(pos, true);
+		if (this._map) {
+			var pos = this._map._latLngToNewLayerPoint(this._latlng, this._map.getZoom(), this._map.getCenter());
+			this._setPos(pos, true);
+		}
 	},
 
 	_initInteraction: function () {
