@@ -101,6 +101,7 @@ export var Marker = Layer.extend({
 
 		if (this._zoomAnimated) {
 			map.on('zoomanim', this._animateZoom, this);
+			map.on('zoomend', this._animateZoomEnd, this);
 		}
 
 		this._initIcon();
@@ -176,11 +177,12 @@ export var Marker = Layer.extend({
 		return this._icon;
 	},
 
-	update: function () {
+	update: function (e) {
 
 		if (this._icon && this._map) {
-			var pos = this._map.latLngToLayerPoint(this._latlng).round();
-			this._setPos(pos);
+			var pos = this._map.latLngToLayerPoint(this._latlng);
+			var round = !e || !e.flyTo;
+			this._setPos(pos, round);
 		}
 
 		return this;
@@ -274,11 +276,11 @@ export var Marker = Layer.extend({
 		this._shadow = null;
 	},
 
-	_setPos: function (pos) {
-		DomUtil.setPosition(this._icon, pos);
+	_setPos: function (pos, round) {
+		DomUtil.setPosition(this._icon, pos, round);
 
 		if (this._shadow) {
-			DomUtil.setPosition(this._shadow, pos);
+			DomUtil.setPosition(this._shadow, pos, round);
 		}
 
 		this._zIndex = pos.y + this.options.zIndexOffset;
@@ -291,9 +293,13 @@ export var Marker = Layer.extend({
 	},
 
 	_animateZoom: function (opt) {
-		var pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round();
+		var pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center);
+		this._setPos(pos, false);
+	},
 
-		this._setPos(pos);
+	_animateZoomEnd: function () {
+		var pos = this._map._latLngToNewLayerPoint(this._latlng, this._map.getZoom(), this._map.getCenter());
+		this._setPos(pos, true);
 	},
 
 	_initInteraction: function () {

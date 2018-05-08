@@ -185,7 +185,7 @@ export var Draggable = Evented.extend({
 		// Fired continuously during dragging *before* each corresponding
 		// update of the element's position.
 		this.fire('predrag', e);
-		DomUtil.setPosition(this._element, this._newPos);
+		DomUtil.setPosition(this._element, this._newPos, false);
 
 		// @event drag: Event
 		// Fired continuously during dragging.
@@ -221,6 +221,9 @@ export var Draggable = Evented.extend({
 		if (this._moved && this._moving) {
 			// ensure drag is not fired after dragend
 			Util.cancelAnimFrame(this._animRequest);
+
+			// round final coordinates
+			DomUtil.setPosition(this._element, this._newPos, true);
 
 			// @event dragend: DragEndEvent
 			// Fired when the drag ends.

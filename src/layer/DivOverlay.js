@@ -183,7 +183,7 @@ export var DivOverlay = Layer.extend({
 		    anchor = this._getAnchor();
 
 		if (this._zoomAnimated) {
-			DomUtil.setPosition(this._container, pos.add(anchor));
+			DomUtil.setPosition(this._container, pos.add(anchor), true);
 		} else {
 			offset = offset.add(pos).add(anchor);
 		}
@@ -192,8 +192,8 @@ export var DivOverlay = Layer.extend({
 		    left = this._containerLeft = -Math.round(this._containerWidth / 2) + offset.x;
 
 		// bottom position the popup in case the height of the popup changes (images loading etc)
-		this._container.style.bottom = bottom + 'px';
-		this._container.style.left = left + 'px';
+		this._container.style.bottom = Math.round(bottom) + 'px';
+		this._container.style.left = Math.round(left) + 'px';
 	},
 
 	_getAnchor: function () {

@@ -340,10 +340,10 @@ export var Map = Evented.extend({
 		if (options.animate !== false) {
 			DomUtil.addClass(this._mapPane, 'leaflet-pan-anim');
 
-			var newPos = this._getMapPanePos().subtract(offset).round();
+			var newPos = this._getMapPanePos().subtract(offset);
 			this._panAnim.run(this._mapPane, newPos, options.duration || 0.25, options.easeLinearity);
 		} else {
-			this._rawPanBy(offset);
+			this._rawPanBy(offset, true);
 			this.fire('move').fire('moveend');
 		}
 
@@ -546,7 +546,7 @@ export var Map = Evented.extend({
 
 		} else {
 			if (options.pan) {
-				this._rawPanBy(offset);
+				this._rawPanBy(offset, true);
 			}
 
 			this.fire('move');
@@ -1216,8 +1216,8 @@ export var Map = Evented.extend({
 		return this;
 	},
 
-	_rawPanBy: function (offset) {
-		DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset));
+	_rawPanBy: function (offset, round) {
+		DomUtil.setPosition(this._mapPane, this._getMapPanePos().subtract(offset), round);
 	},
 
 	_getZoomSpan: function () {

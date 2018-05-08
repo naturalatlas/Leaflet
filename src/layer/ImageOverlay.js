@@ -217,7 +217,7 @@ export var ImageOverlay = Layer.extend({
 		var scale = this._map.getZoomScale(e.zoom),
 		    offset = this._map._latLngBoundsToNewLayerBounds(this._bounds, e.zoom, e.center).min;
 
-		DomUtil.setTransform(this._image, offset, scale);
+		DomUtil.setTransform(this._image, offset, scale, false);
 	},
 
 	_reset: function () {
@@ -227,7 +227,7 @@ export var ImageOverlay = Layer.extend({
 		        this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
 		    size = bounds.getSize();
 
-		DomUtil.setPosition(image, bounds.min);
+		DomUtil.setPosition(image, bounds.min, true);
 
 		image.style.width  = size.x + 'px';
 		image.style.height = size.y + 'px';

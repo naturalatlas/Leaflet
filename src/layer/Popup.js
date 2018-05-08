@@ -231,7 +231,7 @@ export var Popup = DivOverlay.extend({
 	_animateZoom: function (e) {
 		var pos = this._map._latLngToNewLayerPoint(this._latlng, e.zoom, e.center),
 		    anchor = this._getAnchor();
-		DomUtil.setPosition(this._container, pos.add(anchor));
+		DomUtil.setPosition(this._container, pos.add(anchor), false);
 	},
 
 	_adjustPan: function () {

@@ -161,7 +161,7 @@ export var Tooltip = DivOverlay.extend({
 		DomUtil.removeClass(container, 'leaflet-tooltip-top');
 		DomUtil.removeClass(container, 'leaflet-tooltip-bottom');
 		DomUtil.addClass(container, 'leaflet-tooltip-' + direction);
-		DomUtil.setPosition(container, pos);
+		DomUtil.setPosition(container, pos, true);
 	},
 
 	_updatePosition: function () {

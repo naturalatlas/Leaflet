@@ -58,7 +58,7 @@ export var PosAnimation = Evented.extend({
 	_animate: function () {
 		// animation loop
 		this._animId = Util.requestAnimFrame(this._animate, this);
-		this._step();
+		this._step(false);
 	},
 
 	_step: function (round) {
@@ -68,17 +68,14 @@ export var PosAnimation = Evented.extend({
 		if (elapsed < duration) {
 			this._runFrame(this._easeOut(elapsed / duration), round);
 		} else {
-			this._runFrame(1);
+			this._runFrame(1, true);
 			this._complete();
 		}
 	},
 
 	_runFrame: function (progress, round) {
 		var pos = this._startPos.add(this._offset.multiplyBy(progress));
-		if (round) {
-			pos._round();
-		}
-		DomUtil.setPosition(this._el, pos);
+		DomUtil.setPosition(this._el, pos, round);
 
 		// @event step: Event
 		// Fired continuously during the animation.

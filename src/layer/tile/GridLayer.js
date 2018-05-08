@@ -522,11 +522,12 @@ export var GridLayer = Layer.extend({
 
 	_resetView: function (e) {
 		var animating = e && (e.pinch || e.flyTo);
-		this._setView(this._map.getCenter(), this._map.getZoom(), animating, animating);
+		var round = !animating;
+		this._setView(this._map.getCenter(), this._map.getZoom(), animating, animating, round);
 	},
 
 	_animateZoom: function (e) {
-		this._setView(e.center, e.zoom, true, e.noUpdate);
+		this._setView(e.center, e.zoom, true, e.noUpdate, true);
 	},
 
 	_clampZoom: function (zoom) {
@@ -543,7 +544,7 @@ export var GridLayer = Layer.extend({
 		return zoom;
 	},
 
-	_setView: function (center, zoom, noPrune, noUpdate) {
+	_setView: function (center, zoom, noPrune, noUpdate, round) {
 		var tileZoom = this._clampZoom(Math.round(zoom));
 		if ((this.options.maxZoom !== undefined && tileZoom > this.options.maxZoom) ||
 		    (this.options.minZoom !== undefined && tileZoom < this.options.minZoom)) {
@@ -576,24 +577,24 @@ export var GridLayer = Layer.extend({
 			this._noPrune = !!noPrune;
 		}
 
-		this._setZoomTransforms(center, zoom);
+		this._setZoomTransforms(center, zoom, round);
 	},
 
-	_setZoomTransforms: function (center, zoom) {
+	_setZoomTransforms: function (center, zoom, round) {
 		for (var i in this._levels) {
-			this._setZoomTransform(this._levels[i], center, zoom);
+			this._setZoomTransform(this._levels[i], center, zoom, round);
 		}
 	},
 
-	_setZoomTransform: function (level, center, zoom) {
+	_setZoomTransform: function (level, center, zoom, round) {
 		var scale = this._map.getZoomScale(zoom, level.zoom),
 		    translate = level.origin.multiplyBy(scale)
-		        .subtract(this._map._getNewPixelOrigin(center, zoom)).round();
+		        .subtract(this._map._getNewPixelOrigin(center, zoom));
 
 		if (Browser.any3d) {
-			DomUtil.setTransform(level.el, translate, scale);
+			DomUtil.setTransform(level.el, translate, scale, round);
 		} else {
-			DomUtil.setPosition(level.el, translate);
+			DomUtil.setPosition(level.el, translate, round);
 		}
 	},
 
@@ -823,7 +824,7 @@ export var GridLayer = Layer.extend({
 			Util.requestAnimFrame(Util.bind(this._tileReady, this, coords, null, tile));
 		}
 
-		DomUtil.setPosition(tile, tilePos);
+		DomUtil.setPosition(tile, tilePos, true);
 
 		// save tile in cache
 		this._tiles[key] = {
